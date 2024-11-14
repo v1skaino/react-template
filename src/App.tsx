@@ -1,5 +1,7 @@
+import Outlet from "./shared/routes/router.outlet";
+
 function App() {
-  return <>y</>;
+  return <Outlet />;
 }
 
 export default App;
