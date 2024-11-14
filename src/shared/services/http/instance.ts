@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import constants from '@/shared/constants/constants';
+import config from '@/shared/config/config';
 import { setupInterceptorsTo } from './interceptors';
 
-const http = setupInterceptorsTo(axios.create({ baseURL: constants.API.BASE_URL }));
+const http = setupInterceptorsTo(axios.create({ baseURL: config.API.BASE_URL }));
 
 export { http };
