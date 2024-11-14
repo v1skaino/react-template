@@ -11,7 +11,7 @@ interface IPerformRequestWithHandlers {
   showErrorMessage?: boolean;
 }
 
-export default function useAPI() {
+export default function useHttp() {
   const { setLoading, notify } = useLayout();
 
   const voidFnct = async () => {};
