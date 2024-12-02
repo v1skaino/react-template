@@ -1,50 +1,70 @@
-# React + TypeScript + Vite
+# Arquitetura React: Presentational and Containers
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A arquitetura "Presentational and Containers" é uma abordagem para organizar componentes em aplicações React. Ela promove a separação de responsabilidades, tornando o código mais modular, reutilizável e fácil de manter.
 
-Currently, two official plugins are available:
+## Conceitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Componentes Presentational
 
-## Expanding the ESLint configuration
+- **Responsabilidade**: Focar exclusivamente na renderização da interface do usuário (UI).
+- **Função**: Exibir dados recebidos via `props` e emitir eventos para os componentes pais.
+- **Características**:
+  - Não têm lógica de negócio.
+  - Não acessam diretamente o estado global ou serviços externos.
+- **Exemplo**:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+  ```jsx
+  import React from 'react';
 
-- Configure the top-level `parserOptions` property like this:
+  const TodoList = ({ todos, onTodoClick }) => (
+    <ul>
+      {todos.map((todo, index) => (
+        <li key={index} onClick={() => onTodoClick(index)}>
+          {todo.text}
+        </li>
+      ))}
+    </ul>
+  );
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+  export default TodoList;
+  ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Componentes Containers
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- **Responsabilidade**: Gerenciar o estado e a lógica de negócio.
+- **Função**: Fornecer dados e callbacks para os componentes Presentational.
+- **Características**:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+  - Conectam-se a fontes de dados externas (ex.: Redux, API, Context API).
+
+- **Exemplo**:
+
+  ```jsx
+  import React, { useState } from 'react';
+  import TodoList from './TodoList';
+
+  const TodoApp = () => {
+    const [todos, setTodos] = useState([{ text: 'Learn React' }, { text: 'Build a project' }]);
+
+    const handleTodoClick = (index) => {
+      console.log(`Todo ${index} clicked!`);
+    };
+
+    return <TodoList todos={todos} onTodoClick={handleTodoClick} />;
+  };
+
+  export default TodoApp;
+  ```
+
+## Benefícios
+
+- **Separação de responsabilidades**: Facilita a manutenção e os testes, pois a lógica de negócio e a UI são claramente separadas.
+- **Reutilização**: Componentes Presentational podem ser reutilizados em diferentes partes da aplicação.
+- **Testabilidade**: Componentes Presentational são mais fáceis de testar, já que dependem apenas das `props`.
+- **Colaboração**: Designers podem trabalhar nos componentes Presentational enquanto desenvolvedores focam na lógica de negócio.
+
+## Fluxo Geral
+
+1. **Container Component** gerencia o estado e a lógica de negócio.
+2. Ele passa os dados e callbacks necessários para os **Presentational Components** via `props`.
+3. **Presentational Components** exibem a interface com base nas `props` e notificam o **Container Component** sobre eventos (ex.: cliques, formulários).
